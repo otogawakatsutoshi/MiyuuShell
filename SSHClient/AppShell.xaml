@@ -11,5 +11,31 @@
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
         Route="MainPage" />
+    <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate local:SettingsPage}"
+        Route="SettingsPage" />
+    <ShellContent
+        Title="SSH"
+        ContentTemplate="{DataTemplate local:SSHPage}"
+        Route="SSHPage" />
+    <ShellContent
+        Title="Profile"
+        ContentTemplate="{DataTemplate local:ProfilePage}"
+        Route="ProfilePage" />
+    <ShellContent
+        Title="Private Key"
+        ContentTemplate="{DataTemplate local:PrivateKeyPage}"
+        Route="PrivateKeyPage" />
+    
+    <FlyoutItem Title="Private Key">
+        <Tab Title="Private Key">
+            <ShellContent Title="List" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+            <ShellContent Title="Create" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+            <ShellContent Title="Delete" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+            <ShellContent Title="Keys" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+        </Tab>
+    </FlyoutItem>
+
 
 </Shell>

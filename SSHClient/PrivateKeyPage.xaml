@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SSHClient.PrivateKeyPage"
+             Title="PrivateKeyPage">
+    <VerticalStackLayout Padding="20">
+        <Label 
+            Text="PrivateKey"
+            VerticalOptions="Center" 
+            HorizontalOptions="Center" />
+        <Label Text="Key Name:" />
+        <Entry x:Name="KeyNameEntry" Placeholder="Enter a key name" />
+
+        <Label Text="Private Key:" />
+        <Editor x:Name="PrivateKeyEditor" Placeholder="Paste private key here" AutoSize="TextChanges" HeightRequest="100" />
+
+        <Button Text="Generate Key" Clicked="OnGenerateKeyClicked" />
+
+        <Button Text="Save Private Key" Clicked="OnSavePrivateKeyClicked" />
+        <Button Text="Load Private Keys" Clicked="OnLoadPrivateKeysClicked" />
+
+        <Picker x:Name="KeyPicker" Title="Select a saved key" />
+        <Button Text="Delete Selected Key" Clicked="OnDeleteSelectedKeyClicked" />
+        <Button Text="Export Selected Key" Clicked="OnExportKeyClicked" />
+
+
+        <Label x:Name="OutputLabel" Text="Status" />
+    </VerticalStackLayout>
+
+</ContentPage>
