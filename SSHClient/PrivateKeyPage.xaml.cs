@@ -62,6 +62,7 @@ public partial class PrivateKeyPage : ContentPage
         using var rsa = new RSACryptoServiceProvider(2048);
         rsa.PersistKeyInCsp = false;
 
+        // crlfが機種依存で変わるのかわからんのでチェック。
         // SSH プライベートキー形式 (PEM)
         string privateKey = ExportPrivateKeyToPEM(rsa);
         PrivateKeyEditor.Text = privateKey;
