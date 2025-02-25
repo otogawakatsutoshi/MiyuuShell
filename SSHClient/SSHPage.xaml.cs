@@ -25,11 +25,11 @@ public partial class SSHPage : ContentPage
             if (OperatingSystem.IsIOSVersionAtLeast(12) || OperatingSystem.IsAndroidVersionAtLeast(21))
             {
                 OutputLabel.Text = "Disconnected";
-                ConnectButton.Text = "Connect";
+                ConnectButton.Text = "🔗Connect";
             } else
             {
                 OutputLabel.Text = "Disconnected";
-                ConnectButton.Text = "Connect";
+                ConnectButton.Text = "🔗Connect";
             }
                
            
@@ -71,7 +71,7 @@ public partial class SSHPage : ContentPage
                     MainThread.BeginInvokeOnMainThread(() =>
                     {
                         OutputLabel.Text = $"Connected to {host}";
-                        ConnectButton.Text = "Disconnect";
+                        ConnectButton.Text = "⛓️‍💥Disconnect";
                     });
                 }
                 else

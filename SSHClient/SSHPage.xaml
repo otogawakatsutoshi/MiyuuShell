@@ -3,23 +3,26 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SSHClient.SSHPage"
              Title="SSH">
-    <VerticalStackLayout Padding="20" Spacing="15">
-        <Label 
-            Text="SSH"
-            VerticalOptions="Center" 
-            HorizontalOptions="Center" />
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Label 
+                Text="SSH"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
 
-        <StackLayout Padding="20" Spacing="10">
-            <Label Text="Host:" />
-            <Entry x:Name="HostEntry" Placeholder="Host" />
-            <Label Text="Username:" />
-            <Entry x:Name="UsernameEntry" Placeholder="Username" />
-            <Label Text="Password (leave empty for key authentication):" />
-            <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
-            <Label Text="Private Key (Paste here, optional):" />
-            <Editor x:Name="PrivateKeyEditor" Placeholder="Paste private key here" AutoSize="TextChanges" HeightRequest="100" />
-            <Button x:Name="ConnectButton" Text="Connect" Clicked="OnConnectButtonClicked" />
-            <Label x:Name="OutputLabel" />
-        </StackLayout>
-    </VerticalStackLayout>
+            <StackLayout Padding="20" Spacing="10">
+                <Label Text="Host:" />
+                <Entry x:Name="HostEntry" Placeholder="Host" />
+                <Label Text="Username:" />
+                <Entry x:Name="UsernameEntry" Placeholder="Username" />
+                <Label Text="Password (leave empty for key authentication):" />
+                <Entry x:Name="PasswordEntry" Placeholder="Password" IsPassword="True" />
+                <Label Text="Private Key (Paste here, optional):" />
+                <Editor x:Name="PrivateKeyEditor" Placeholder="Paste private key here" AutoSize="TextChanges" HeightRequest="100" />
+                <Button x:Name="ConnectButton" Text="🔗Connect" Clicked="OnConnectButtonClicked" />
+                <Label x:Name="OutputLabel" />
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+    
 </ContentPage>
