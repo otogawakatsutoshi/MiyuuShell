@@ -4,20 +4,23 @@
              x:Class="SSHClient.PingPage"
              Title="Ping Test">
 
-    <StackLayout Padding="20">
-        <!-- IP またはホスト名入力フィールド -->
-        <Entry x:Name="HostEntry" Placeholder="Enter IP or Hostname" />
+    <ScrollView>
+        <StackLayout Padding="20">
+            <!-- IP またはホスト名入力フィールド -->
+            <Entry x:Name="HostEntry" Placeholder="Enter IP or Hostname" />
 
-        <!-- Ping 回数入力フィールド -->
-        <Entry x:Name="PingCountEntry" Placeholder="Ping Count (e.g., 4)" Keyboard="Numeric" />
+            <!-- Ping 回数入力フィールド -->
+            <Entry x:Name="PingCountEntry" Placeholder="Ping Count (e.g., 4)" Keyboard="Numeric" />
 
-        <!-- タイムアウト時間入力フィールド -->
-        <Entry x:Name="TimeoutEntry" Placeholder="Timeout (ms, e.g., 1000)" Keyboard="Numeric" />
+            <!-- タイムアウト時間入力フィールド -->
+            <Entry x:Name="TimeoutEntry" Placeholder="Timeout (ms, e.g., 1000)" Keyboard="Numeric" />
 
-        <!-- Ping 実行ボタン -->
-        <Button Text="Ping" Clicked="OnPingButtonClicked" />
+            <!-- Ping 実行ボタン -->
+            <Button Text="Ping" Clicked="OnPingButtonClicked" />
 
-        <!-- 結果表示用ラベル -->
-        <Label x:Name="ResultLabel" Text="Result will be shown here" />
-    </StackLayout>
+            <!-- 結果表示用ラベル -->
+            <Label x:Name="ResultLabel" Text="Result will be shown here" />
+        </StackLayout>
+    </ScrollView>
+    
 </ContentPage>
