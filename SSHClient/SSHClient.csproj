@@ -24,7 +24,7 @@
 		<ApplicationTitle>SSHClient</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.sshclient</ApplicationId>
+		<ApplicationId>app.otogawa-katsutoshi.network-tools</ApplicationId>
 
 		<!-- Versions -->
 		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
