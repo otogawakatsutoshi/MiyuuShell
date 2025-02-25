@@ -15,6 +15,14 @@
         Title="Settings"
         ContentTemplate="{DataTemplate local:SettingsPage}"
         Route="SettingsPage" />
+    <FlyoutItem Title="Network">
+        <Tab Title="Network">
+            <ShellContent Title="My" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+            <ShellContent Title="Create" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+            <ShellContent Title="Delete" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+            <ShellContent Title="Keys" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+        </Tab>
+    </FlyoutItem>
     <ShellContent
         Title="SSH"
         ContentTemplate="{DataTemplate local:SSHPage}"
