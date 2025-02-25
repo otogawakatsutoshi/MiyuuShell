@@ -70,6 +70,9 @@
 	  <Compile Update="NetworkPage.xaml.cs">
 	    <DependentUpon>NetworkPage.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="PingPage.xaml.cs">
+	    <DependentUpon>PingPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="ProfilePage.xaml.cs">
 	    <DependentUpon>ProfilePage.xaml</DependentUpon>
 	  </Compile>
@@ -80,6 +83,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="NetworkPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="PingPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="PrivateKeyPage.xaml">

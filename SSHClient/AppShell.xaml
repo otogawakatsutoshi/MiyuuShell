@@ -24,6 +24,10 @@
         </Tab>
     </FlyoutItem>
     <ShellContent
+         Title="Ping"
+         ContentTemplate="{DataTemplate local:PingPage}"
+         Route="PingPage" />
+    <ShellContent
         Title="SSH"
         ContentTemplate="{DataTemplate local:SSHPage}"
         Route="SSHPage" />
