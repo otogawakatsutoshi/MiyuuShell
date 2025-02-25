@@ -361,3 +361,12 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Apple 証明書やプロビジョニングプロファイルを除外
+*.p12
+*.mobileprovision
+*.cer
+
+# macOS の Xcode ワークスペース設定（ローカル環境依存のもの）
+.DS_Store
+*.xcuserstate
