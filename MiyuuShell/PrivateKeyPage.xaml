@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MiyuuShell.PrivateKeyPage"
+             Title="PrivateKeyPage">
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+            <Label 
+                Text="PrivateKey"
+                VerticalOptions="Center" 
+                HorizontalOptions="Center" />
+
+            <StackLayout Padding="20" Spacing="30">
+                <Label Text="Key Name:" />
+                <Entry x:Name="KeyNameEntry" Placeholder="Enter a key name" />
+
+                <Label Text="Private Key:" />
+                <Editor x:Name="PrivateKeyEditor" Placeholder="Paste private key here" AutoSize="TextChanges" HeightRequest="100" />
+
+                <Button Text="Generate Key" HorizontalOptions="Center" Clicked="OnGenerateKeyClicked" />
+
+                <Button Text="💾Save Private Key" HorizontalOptions="Center" Clicked="OnSavePrivateKeyClicked" />
+                <Button Text="Load Private Keys" HorizontalOptions="Center" Clicked="OnLoadPrivateKeysClicked" />
+
+                <Picker x:Name="KeyPicker" Title="Select a saved key" />
+                <Button Text="🗑️Delete Selected Key" BackgroundColor="Red" TextColor="White" HorizontalOptions="Start" Clicked="OnDeleteSelectedKeyClicked" />
+                <Button Text="Export Selected Key" HorizontalOptions="Center" Clicked="OnExportKeyClicked" />
+
+
+                <Label x:Name="OutputLabel" Text="Status" />
+            </StackLayout>
+        </VerticalStackLayout>
+    </ScrollView>
+
+
+</ContentPage>

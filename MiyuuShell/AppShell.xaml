@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="MiyuuShell.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:MiyuuShell"
+    Shell.FlyoutBehavior="Flyout"
+    Title="MiyuuShell">
+
+    <ShellContent
+        Title="Home"
+        ContentTemplate="{DataTemplate local:MainPage}"
+        Route="MainPage" />
+    <ShellContent
+        Title="Settings"
+        ContentTemplate="{DataTemplate local:SettingsPage}"
+        Route="SettingsPage" />
+    <FlyoutItem Title="Network">
+        <Tab Title="Network">
+            <ShellContent Title="My" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+            <ShellContent Title="Create" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+            <ShellContent Title="Delete" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+            <ShellContent Title="Keys" ContentTemplate="{DataTemplate local:NetworkPage}"/>
+        </Tab>
+    </FlyoutItem>
+    <ShellContent
+         Title="Ping"
+         ContentTemplate="{DataTemplate local:PingPage}"
+         Route="PingPage" />
+    <ShellContent
+        Title="SSH"
+        ContentTemplate="{DataTemplate local:SSHPage}"
+        Route="SSHPage" />
+    <ShellContent
+        Title="Profile"
+        ContentTemplate="{DataTemplate local:ProfilePage}"
+        Route="ProfilePage" />
+    <ShellContent
+        Title="Private Key"
+        ContentTemplate="{DataTemplate local:PrivateKeyPage}"
+        Route="PrivateKeyPage" />
+    
+    <FlyoutItem Title="Private Key">
+        <Tab Title="Private Key">
+            <ShellContent Title="List" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+            <ShellContent Title="Create" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+            <ShellContent Title="Delete" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+            <ShellContent Title="Keys" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
+        </Tab>
+    </FlyoutItem>
+
+
+</Shell>
