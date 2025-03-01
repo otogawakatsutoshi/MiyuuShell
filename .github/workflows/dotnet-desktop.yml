@@ -43,6 +43,9 @@ on:
     branches:
       - main
 
+env:
+  APP_NAME: MiyuuShell
+
 jobs:
   build-windows:
     runs-on: windows-2022
@@ -59,23 +62,26 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
+      - name: Install MAUI workload
+        run: |
+          dotnet workload install windows
+          dotnet workload install maui
+
       - name: Get app name from .csproj
         run: |
           $appName = dotnet msbuild -nologo -t:GetTargetPath -p:Configuration=Release | Select-String -Pattern '\\([^\\]+)\.exe$' | ForEach-Object { $_.Matches.Groups[1].Value }
           echo "APP_NAME=$appName" >> $env:GITHUB_ENV
 
       - name: Restore dependencies
-        run: |
-          dotnet workload install windows
-          dotnet workload install maui
+        run: dotnet restore
 
       - name: Build MSIX package (${{ matrix.arch }})
         run: |
-          dotnet publish -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained true -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
 
       - name: Build EXE package (${{ matrix.arch }})
         run: |
-          dotnet publish -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained true -o publish/exe-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained true -o publish/exe-${{ matrix.arch }}
 
       - name: Upload MSIX package
         uses: actions/upload-artifact@v4
@@ -119,7 +125,7 @@ jobs:
 
       - name: Build app bundle (${{ matrix.arch }})
         run: |
-          dotnet publish -f net9.0-maccatalyst -c Release -r ${{ matrix.arch }} --self-contained false -o publish/app-${{ matrix.arch }}
+          dotnet publish -f net9.0-maccatalyst -c Release -r ${{ matrix.arch }} --self-contained true -o publish/app-${{ matrix.arch }}
 
       - name: Create PKG package (${{ matrix.arch }})
         run: |
