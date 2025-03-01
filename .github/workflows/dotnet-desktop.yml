@@ -65,7 +65,9 @@ jobs:
           echo "APP_NAME=$appName" >> $env:GITHUB_ENV
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: |
+          dotnet workload install windows
+          dotnet workload install maui
 
       - name: Build MSIX package (${{ matrix.arch }})
         run: |
@@ -103,7 +105,9 @@ jobs:
           dotnet-version: '9.0.x'
 
       - name: Install MAUI workload
-        run: dotnet workload install maui
+        run: |
+          dotnet workload install maccatalyst
+          dotnet workload install maui
 
       - name: Get app name from .csproj
         run: |
