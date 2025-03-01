@@ -9,7 +9,7 @@ namespace MiyuuShell;
 
 public partial class SSHPage : ContentPage
 {
-    private SshClient _client;
+    private SshClient? _client;
     public SSHPage()
 	{
 		InitializeComponent();

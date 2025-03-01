@@ -18,7 +18,7 @@ public partial class PrivateKeyPage : ContentPage
 	//	InitializeComponent();
 	//}
     private const string PrivateKeyStorageKey = "SSH_PRIVATE_KEYS";
-    private Dictionary<string, string> _privateKeys = new();
+    private Dictionary<string, string> _privateKeys = [];
 
     public PrivateKeyPage()
     {
@@ -31,7 +31,7 @@ public partial class PrivateKeyPage : ContentPage
         var storedJson = await SecureStorage.GetAsync(PrivateKeyStorageKey);
         if (!string.IsNullOrEmpty(storedJson))
         {
-            _privateKeys = JsonSerializer.Deserialize<Dictionary<string, string>>(storedJson);
+            _privateKeys = JsonSerializer.Deserialize<Dictionary<string, string>>(storedJson) ?? [];
             KeyPicker.ItemsSource = _privateKeys.Keys.ToList();
         }
     }
@@ -97,7 +97,9 @@ public partial class PrivateKeyPage : ContentPage
     // 鍵をエクスポート
     private async void OnExportKeyClicked(object sender, EventArgs e)
     {
-        if (KeyPicker.SelectedItem == null)
+
+        var selectedKey = KeyPicker.SelectedItem.ToString();
+        if (selectedKey == null)
         {
             OutputLabel.Text = "Select a key to export.";
             OutputLabel.TextColor = Colors.Red;
@@ -112,7 +114,6 @@ public partial class PrivateKeyPage : ContentPage
             return;
         }
 
-        string selectedKey = KeyPicker.SelectedItem.ToString();
         string privateKey = _privateKeys[selectedKey];
 
         try
@@ -139,7 +140,7 @@ public partial class PrivateKeyPage : ContentPage
 
 
 
-    private async void OnLoadPrivateKeysClicked(object sender, EventArgs e)
+    private void OnLoadPrivateKeysClicked(object sender, EventArgs e)
     {
         LoadStoredKeys();
         OutputLabel.Text = "Keys loaded.";
@@ -147,13 +148,13 @@ public partial class PrivateKeyPage : ContentPage
 
     private async void OnDeleteSelectedKeyClicked(object sender, EventArgs e)
     {
-        if (KeyPicker.SelectedItem == null)
+        var selectedKey = KeyPicker.SelectedItem.ToString();
+        if (selectedKey == null)
         {
             OutputLabel.Text = "Select a key to delete.";
             return;
         }
 
-        string selectedKey = KeyPicker.SelectedItem.ToString();
         _privateKeys.Remove(selectedKey);
 
         string json = JsonSerializer.Serialize(_privateKeys);

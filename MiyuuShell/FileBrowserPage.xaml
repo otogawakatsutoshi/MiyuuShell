@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MiyuuShell.FileBrowserPage">
+
+    <VerticalStackLayout Padding="10">
+        <Button Text="New file" Clicked="OnCreateFileClicked" />
+        <ListView x:Name="FileListView" ItemSelected="OnFileSelected">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Label x:Name="FileContentLabel" Text="ファイルの内容を表示" 
+               Padding="10" VerticalOptions="FillAndExpand"/>
+    </VerticalStackLayout>
+</ContentPage>

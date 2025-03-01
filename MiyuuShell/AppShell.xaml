@@ -15,6 +15,13 @@
         Title="Settings"
         ContentTemplate="{DataTemplate local:SettingsPage}"
         Route="SettingsPage" />
+    <FlyoutItem Title="FileBrowser">
+        <Tab Title="FileBrowser">
+            <ShellContent Title="My" ContentTemplate="{DataTemplate local:FileBrowserPage}"/>
+            
+            <ShellContent Title="Create" ContentTemplate="{DataTemplate local:FileBrowserPage}"/>
+        </Tab>
+    </FlyoutItem>
     <FlyoutItem Title="Network">
         <Tab Title="Network">
             <ShellContent Title="My" ContentTemplate="{DataTemplate local:NetworkPage}"/>
@@ -35,11 +42,7 @@
         Title="Profile"
         ContentTemplate="{DataTemplate local:ProfilePage}"
         Route="ProfilePage" />
-    <ShellContent
-        Title="Private Key"
-        ContentTemplate="{DataTemplate local:PrivateKeyPage}"
-        Route="PrivateKeyPage" />
-    
+
     <FlyoutItem Title="Private Key">
         <Tab Title="Private Key">
             <ShellContent Title="List" ContentTemplate="{DataTemplate local:PrivateKeyPage}"/>
