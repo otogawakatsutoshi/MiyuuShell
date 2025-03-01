@@ -1,0 +1,147 @@
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# This workflow will build, test, sign and package a WPF or Windows Forms desktop application
+# built on .NET Core.
+# To learn how to migrate your existing application to .NET Core,
+# refer to https://docs.microsoft.com/en-us/dotnet/desktop-wpf/migration/convert-project-from-net-framework
+#
+# To configure this workflow:
+#
+# 1. Configure environment variables
+# GitHub sets default environment variables for every workflow run.
+# Replace the variables relative to your project in the "env" section below.
+#
+# 2. Signing
+# Generate a signing certificate in the Windows Application
+# Packaging Project or add an existing signing certificate to the project.
+# Next, use PowerShell to encode the .pfx file using Base64 encoding
+# by running the following Powershell script to generate the output string:
+#
+# $pfx_cert = Get-Content '.\SigningCertificate.pfx' -Encoding Byte
+# [System.Convert]::ToBase64String($pfx_cert) | Out-File 'SigningCertificate_Encoded.txt'
+#
+# Open the output file, SigningCertificate_Encoded.txt, and copy the
+# string inside. Then, add the string to the repo as a GitHub secret
+# and name it "Base64_Encoded_Pfx."
+# For more information on how to configure your signing certificate for
+# this workflow, refer to https://github.com/microsoft/github-actions-for-desktop-apps#signing
+#
+# Finally, add the signing certificate password to the repo as a secret and name it "Pfx_Key".
+# See "Build the Windows Application Packaging project" below to see how the secret is used.
+#
+# For more information on GitHub Actions, refer to https://github.com/features/actions
+# For a complete CI/CD sample to get started with GitHub Action workflows for Desktop Applications,
+# refer to https://github.com/microsoft/github-actions-for-desktop-apps
+
+name: Build .NET MAUI App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-windows:
+    runs-on: windows-2022
+    strategy:
+      matrix:
+        arch: [win-arm64, win-x64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Get app name from .csproj
+        run: |
+          $appName = dotnet msbuild -nologo -t:GetTargetPath -p:Configuration=Release | Select-String -Pattern '\\([^\\]+)\.exe$' | ForEach-Object { $_.Matches.Groups[1].Value }
+          echo "APP_NAME=$appName" >> $env:GITHUB_ENV
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build MSIX package (${{ matrix.arch }})
+        run: |
+          dotnet publish -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
+
+      - name: Build EXE package (${{ matrix.arch }})
+        run: |
+          dotnet publish -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained true -o publish/exe-${{ matrix.arch }}
+
+      - name: Upload MSIX package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-msix-${{ matrix.arch }}
+          path: publish/msix-${{ matrix.arch }}/*.msixbundle
+
+      - name: Upload EXE package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-exe-${{ matrix.arch }}
+          path: publish/exe-${{ matrix.arch }}/*.exe
+
+  build-maccatalyst:
+    runs-on: macos-14
+    strategy:
+      matrix:
+        arch: [maccatalyst-x64, maccatalyst-arm64]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Install MAUI workload
+        run: dotnet workload install maui
+
+      - name: Get app name from .csproj
+        run: |
+          APP_NAME=$(dotnet msbuild -nologo -t:GetTargetPath -p:Configuration=Release | grep -oE '[^/]+\.app' | sed 's/\.app//')
+          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build app bundle (${{ matrix.arch }})
+        run: |
+          dotnet publish -f net9.0-maccatalyst -c Release -r ${{ matrix.arch }} --self-contained false -o publish/app-${{ matrix.arch }}
+
+      - name: Create PKG package (${{ matrix.arch }})
+        run: |
+          mkdir -p mac-packages/${{ matrix.arch }}
+          pkgbuild --root publish/app-${{ matrix.arch }} --identifier com.example.${{ env.APP_NAME }} --version 1.0.0 mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.pkg
+
+      - name: Create DMG package (${{ matrix.arch }})
+        run: |
+          mkdir -p mac-packages/${{ matrix.arch }}/dmg
+          cp -R publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
+          hdiutil create -volname "${{ env.APP_NAME }} Installer" -srcfolder mac-packages/${{ matrix.arch }}/dmg -ov -format UDZO mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.dmg
+
+      - name: Upload macOS APP
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-app-${{ matrix.arch }}
+          path: publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app
+
+      - name: Upload macOS PKG
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-macpkg-${{ matrix.arch }}
+          path: mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.pkg
+
+      - name: Upload macOS DMG
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.APP_NAME }}-macdmg-${{ matrix.arch }}
+          path: mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.dmg
