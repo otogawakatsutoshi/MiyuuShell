@@ -130,9 +130,11 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      # createPackageをfalseにした場合-oが効かない。
+      # bin/Release/net9.0-maccatalyst18.0/maccatalyst-arm64
       - name: Build app bundle (${{ matrix.arch }})
         run: |
-          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -o publish/app-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -o publish/app-${{ matrix.arch }} -p:CreatePackage=false
         env:
           Configuration: ${{ matrix.configuration }}
 
@@ -146,7 +148,8 @@ jobs:
       - name: Create DMG package (${{ matrix.arch }})
         run: |
           mkdir -p mac-packages/${{ matrix.arch }}/dmg
-          cp -R publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
+          # cp -R publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
+          cp -R bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
           hdiutil create -volname "${{ env.APP_NAME }} Installer" -srcfolder mac-packages/${{ matrix.arch }}/dmg -ov -format UDZO mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.dmg
         env:
           Configuration: ${{ matrix.configuration }}
@@ -155,7 +158,10 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APP_NAME }}-app-${{ matrix.arch }}
-          path: publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app
+          path: bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app
+          # path: publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app
+        env:
+          Configuration: ${{ matrix.configuration }}
 
       - name: Upload macOS PKG
         uses: actions/upload-artifact@v4
