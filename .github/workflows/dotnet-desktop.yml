@@ -67,11 +67,6 @@ jobs:
           dotnet workload install windows
           dotnet workload install maui
 
-      - name: Get app name from .csproj
-        run: |
-          $appName = dotnet msbuild -nologo -t:GetTargetPath -p:Configuration=Release | Select-String -Pattern '\\([^\\]+)\.exe$' | ForEach-Object { $_.Matches.Groups[1].Value }
-          echo "APP_NAME=$appName" >> $env:GITHUB_ENV
-
       - name: Restore dependencies
         run: dotnet restore
 
@@ -114,11 +109,6 @@ jobs:
         run: |
           dotnet workload install maccatalyst
           dotnet workload install maui
-
-      - name: Get app name from .csproj
-        run: |
-          APP_NAME=$(dotnet msbuild -nologo -t:GetTargetPath -p:Configuration=Release | grep -oE '[^/]+\.app' | sed 's/\.app//')
-          echo "APP_NAME=$APP_NAME" >> $GITHUB_ENV
 
       - name: Restore dependencies
         run: dotnet restore
