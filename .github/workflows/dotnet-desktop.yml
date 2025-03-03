@@ -141,7 +141,7 @@ jobs:
       - name: Create PKG package (${{ matrix.arch }})
         run: |
           mkdir -p mac-packages/${{ matrix.arch }}
-          pkgbuild --root publish/app-${{ matrix.arch }} --identifier com.example.${{ env.APP_NAME }} --version 1.0.0 mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.pkg
+          pkgbuild --root publish/app-${{ matrix.arch }} --identifier com.example.${{ env.APP_NAME }} mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.pkg
         env:
           Configuration: ${{ matrix.configuration }}
 
@@ -149,7 +149,7 @@ jobs:
         run: |
           mkdir -p mac-packages/${{ matrix.arch }}/dmg
           # cp -R publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
-          cp -R bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
+          cp -R ${{ env.APP_NAME }}/bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
           hdiutil create -volname "${{ env.APP_NAME }} Installer" -srcfolder mac-packages/${{ matrix.arch }}/dmg -ov -format UDZO mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.dmg
         env:
           Configuration: ${{ matrix.configuration }}
@@ -158,7 +158,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APP_NAME }}-app-${{ matrix.arch }}
-          path: bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app
+          path: ${{ env.APP_NAME }}/bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app
           # path: publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app
         env:
           Configuration: ${{ matrix.configuration }}
