@@ -71,7 +71,8 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Restore the workloads.
-        run: msbuild msbuild /t:RestoreWorkloads
+        run: dotnet workload restore
+        # run: msbuild msbuild /t:RestoreWorkloads
 
       # Restore the application to populate the obj folder with RuntimeIdentifiers
       - name: Restore the ${{ matrix.configuration }} application
