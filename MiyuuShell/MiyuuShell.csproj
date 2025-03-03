@@ -2,7 +2,15 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>net9.0-android;net9.0-ios;net9.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net9.0-windows10.0.19041.0;net9.0-windows10.0.20348.0</TargetFrameworks>
+		<!-- `githubがwindows-armに対応したらこう書きたい。 -->
+		<!-- <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) AND '$(ProcessorArchitecture)' == 'x64'">
+  			$(TargetFrameworks);net9.0-windows10.0.20348.0
+		</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows')) AND '$(ProcessorArchitecture)' == 'arm64'">
+  			$(TargetFrameworks);net9.0-windows10.0.19041.0
+		</TargetFrameworks> -->
+
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net9.0-tizen</TargetFrameworks> -->
 
@@ -40,6 +48,13 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">31.0</SupportedOSPlatformVersion>
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
 		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<!-- x64 または amd64 の場合 必要ならば分ける。
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND ('$(TargetArchitecture)' == 'x64' OR '$(TargetArchitecture)' == 'amd64')">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND ('$(TargetArchitecture)' == 'x64' OR '$(TargetArchitecture)' == 'amd64')">10.0.17763.0</TargetPlatformMinVersion>
+
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND '$(PlatformTarget)' == 'AnyCPU' AND '$(ProcessorArchitecture)' == 'x64'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows' AND '$(PlatformTarget)' == 'AnyCPU' AND '$(ProcessorArchitecture)' == 'x64'">10.0.17763.0</TargetPlatformMinVersion> 
+		-->
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 		<Platforms>AnyCPU;ARM64;x64</Platforms>
 	</PropertyGroup>
