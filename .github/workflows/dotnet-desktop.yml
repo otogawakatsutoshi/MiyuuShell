@@ -96,7 +96,7 @@ jobs:
           path: publish/exe-${{ matrix.arch }}/*.exe
 
   build-maccatalyst:
-    runs-on: macos-14
+    runs-on: macos-15
     strategy:
       matrix:
         arch: [maccatalyst-x64, maccatalyst-arm64]
