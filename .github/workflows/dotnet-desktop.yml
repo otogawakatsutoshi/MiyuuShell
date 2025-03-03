@@ -88,15 +88,17 @@ jobs:
       # - name: Restore dependencies
       #   run: dotnet restore
 
+      # - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
+      #   run: |
+      #     msbuild ${{ env.APP_NAME }}/${{env.APP_NAME}}.csproj /t:Publish /p:TargetFramework=net9.0-windows10.0.19041.0 /p:Configuration=${{ env.Configuration }} /p:RuntimeIdentifier=${{ matrix.arch }} /p:SelfContained=true /p:PublishProfile=WindowsMsix /p:PublishDir=publish/msix-${{ matrix.arch }}
+      #   env:
+      #     Configuration: ${{ matrix.configuration }}
+
       - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
         run: |
-          msbuild ${{ env.APP_NAME }}/${{env.APP_NAME}}.csproj /t:Publish /p:TargetFramework=net9.0-windows10.0.19041.0 /p:Configuration=${{ env.Configuration }} /p:RuntimeIdentifier=${{ matrix.arch }} /p:SelfContained=true /p:PublishProfile=WindowsMsix /p:PublishDir=publish/msix-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows10.0.19041.0 -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
         env:
           Configuration: ${{ matrix.configuration }}
-
-      # - name: Build MSIX package (${{ matrix.arch }})
-      #   run: |
-      #     dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows10.0.19041.0 -c Release -r ${{ matrix.arch }} --self-contained true -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
 
       - name: Build EXE package (${{ matrix.arch }}) ${{ matrix.configuration }}
         run: |
