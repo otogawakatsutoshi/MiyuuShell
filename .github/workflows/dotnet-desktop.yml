@@ -51,7 +51,8 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        arch: [win-arm64, win-x64]
+        arch: [win-x64]
+        # arch: [win-arm64, win-x64]
 
     steps:
       - name: Checkout repository
