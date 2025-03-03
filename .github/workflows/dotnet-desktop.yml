@@ -54,9 +54,13 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        arch: [win-x64]
+        arch: [win-arm64, win-x64]
         configuration: [Debug, Release]
-        # arch: [win-arm64, win-x64]
+        include:
+          - arch: win-arm64
+            TARGET_FRAMEWORK: net9.0-windows10.0.20348.0
+          - arch: win-x64
+            TARGET_FRAMEWORK: net9.0-windows10.0.19041.0
 
     steps:
       - name: Checkout repository
@@ -67,45 +71,23 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      # - name: Setup MSBuild.exe
-      #   uses: microsoft/setup-msbuild@v2
-
       - name: Restore the workloads.
         run: dotnet workload restore
-        # run: msbuild msbuild /t:RestoreWorkloads
-
-      # # Restore the application to populate the obj folder with RuntimeIdentifiers
-      # - name: Restore the ${{ matrix.configuration }} application
-      #   run: msbuild ./${{ env.APP_NAME }}.sln /t:Restore /p:Configuration=${{ env.Configuration }}
-      #   env:
-      #     Configuration: ${{ matrix.configuration }}
-
-      # - name: Install MAUI workload
-      #   run: |
-      #     dotnet workload install windows
-      #     dotnet workload install maui
 
       - name: Restore dependencies
         run: dotnet restore
 
-      # - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
-      #   run: |
-      #     msbuild ${{ env.APP_NAME }}/${{env.APP_NAME}}.csproj /t:Publish /p:TargetFramework=net9.0-windows10.0.19041.0 /p:Configuration=${{ env.Configuration }} /p:RuntimeIdentifier=${{ matrix.arch }} /p:SelfContained=true /p:PublishProfile=WindowsMsix /p:PublishDir=publish/msix-${{ matrix.arch }}
-      #   env:
-      #     Configuration: ${{ matrix.configuration }}
-
       - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
         run: |
-          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows10.0.19041.0 -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
         env:
           Configuration: ${{ matrix.configuration }}
 
       - name: Build EXE package (${{ matrix.arch }}) ${{ matrix.configuration }}
         run: |
-          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows10.0.19041.0 -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -o publish/exe-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -o publish/exe-${{ matrix.arch }}
         env:
           Configuration: ${{ matrix.configuration }}
-          # 
 
       - name: Upload MSIX package
         uses: actions/upload-artifact@v4
@@ -134,10 +116,8 @@ jobs:
         with:
           dotnet-version: '9.0.x'
 
-      - name: Install MAUI workload
-        run: |
-          dotnet workload install maccatalyst
-          dotnet workload install maui
+      - name: Restore the workloads.
+        run: dotnet workload restore
 
       - name: Restore dependencies
         run: dotnet restore
