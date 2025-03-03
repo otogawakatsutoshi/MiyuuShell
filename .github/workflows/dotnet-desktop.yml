@@ -72,11 +72,11 @@ jobs:
 
       - name: Build MSIX package (${{ matrix.arch }})
         run: |
-          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained true -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows10.0.19041.0 -c Release -r ${{ matrix.arch }} --self-contained true -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
 
       - name: Build EXE package (${{ matrix.arch }})
         run: |
-          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows -c Release -r ${{ matrix.arch }} --self-contained true -o publish/exe-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f net9.0-windows10.0.19041.0 -c Release -r ${{ matrix.arch }} --self-contained true -o publish/exe-${{ matrix.arch }}
 
       - name: Upload MSIX package
         uses: actions/upload-artifact@v4
