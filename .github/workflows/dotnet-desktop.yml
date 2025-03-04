@@ -78,15 +78,15 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
-        run: |
-          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
-        env:
-          Configuration: ${{ matrix.configuration }}
-
       - name: Build EXE package (${{ matrix.arch }}) ${{ matrix.configuration }}
         run: |
           dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -o publish/exe-${{ matrix.arch }}
+        env:
+          Configuration: ${{ matrix.configuration }}
+      
+      - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
+        run: |
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
         env:
           Configuration: ${{ matrix.configuration }}
 
@@ -107,6 +107,13 @@ jobs:
     strategy:
       matrix:
         arch: [maccatalyst-x64, maccatalyst-arm64]
+        # configuration: [Debug, Release]
+        configuration: [Debug]
+        include:
+          - arch: maccatalyst-arm64
+            TARGET_FRAMEWORK: net9.0-maccatalyst18.0
+          - arch: maccatalyst-x64
+            TARGET_FRAMEWORK: net9.0-maccatalyst18.0
 
     steps:
       - name: Checkout repository
@@ -123,26 +130,38 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
+      # createPackageをfalseにした場合-oが効かない。
+      # bin/Release/net9.0-maccatalyst18.0/maccatalyst-arm64
       - name: Build app bundle (${{ matrix.arch }})
         run: |
-          dotnet publish -f net9.0-maccatalyst -c Release -r ${{ matrix.arch }} --self-contained true -o publish/app-${{ matrix.arch }}
+          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -o publish/app-${{ matrix.arch }} -p:CreatePackage=false
+        env:
+          Configuration: ${{ matrix.configuration }}
 
       - name: Create PKG package (${{ matrix.arch }})
         run: |
           mkdir -p mac-packages/${{ matrix.arch }}
-          pkgbuild --root publish/app-${{ matrix.arch }} --identifier com.example.${{ env.APP_NAME }} --version 1.0.0 mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.pkg
+          pkgbuild --root publish/app-${{ matrix.arch }} --identifier com.example.${{ env.APP_NAME }} mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.pkg
+        env:
+          Configuration: ${{ matrix.configuration }}
 
       - name: Create DMG package (${{ matrix.arch }})
         run: |
           mkdir -p mac-packages/${{ matrix.arch }}/dmg
-          cp -R publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
+          # cp -R publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
+          cp -R ${{ env.APP_NAME }}/bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app mac-packages/${{ matrix.arch }}/dmg/
           hdiutil create -volname "${{ env.APP_NAME }} Installer" -srcfolder mac-packages/${{ matrix.arch }}/dmg -ov -format UDZO mac-packages/${{ matrix.arch }}/${{ env.APP_NAME }}.dmg
+        env:
+          Configuration: ${{ matrix.configuration }}
 
       - name: Upload macOS APP
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APP_NAME }}-app-${{ matrix.arch }}
-          path: publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app
+          path: ${{ env.APP_NAME }}/bin/${{ env.Configuration }}/${{ matrix.TARGET_FRAMEWORK }}/${{ matrix.arch }}/${{ env.APP_NAME }}.app
+          # path: publish/app-${{ matrix.arch }}/${{ env.APP_NAME }}.app
+        env:
+          Configuration: ${{ matrix.configuration }}
 
       - name: Upload macOS PKG
         uses: actions/upload-artifact@v4
