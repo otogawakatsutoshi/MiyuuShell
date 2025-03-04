@@ -38,10 +38,9 @@
 
 name: Build .NET MAUI preview App
 
+# previewのdotnetは確認したいときに手動でチェック。
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   APP_NAME: MiyuuShell                                      # Replace with your solution name, i.e. MyWpfApp.sln.
@@ -84,23 +83,24 @@ jobs:
       - name: Restore dependencies
         run: dotnet restore
 
-      - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
-        run: |
-          dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
-        env:
-          Configuration: ${{ matrix.configuration }}
-
       - name: Build EXE package (${{ matrix.arch }}) ${{ matrix.configuration }}
         run: |
           dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -o publish/exe-${{ matrix.arch }}
         env:
           Configuration: ${{ matrix.configuration }}
 
-      - name: Upload MSIX package
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ env.APP_NAME }}-msix-preview-${{ matrix.arch }}
-          path: publish/msix-${{ matrix.arch }}/*.msixbundle
+      # msixのビルドは現在不安定 or 煩雑なので飛ばす。
+      # - name: Build MSIX package (${{ matrix.arch }}) ${{ matrix.configuration }}
+      #   run: |
+      #     dotnet publish ${{env.APP_NAME}}/${{env.APP_NAME}}.csproj -f ${{ matrix.TARGET_FRAMEWORK }} -c ${{ env.Configuration }} -r ${{ matrix.arch }} --self-contained true -p:UseMonoRuntime=false -p:PublishProfile=WindowsMsix -o publish/msix-${{ matrix.arch }}
+      #   env:
+      #     Configuration: ${{ matrix.configuration }}
+
+      # - name: Upload MSIX package
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ env.APP_NAME }}-msix-preview-${{ matrix.arch }}
+      #     path: publish/msix-${{ matrix.arch }}/*.msixbundle
 
       - name: Upload EXE package
         uses: actions/upload-artifact@v4
