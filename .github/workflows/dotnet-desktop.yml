@@ -100,7 +100,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.APP_NAME }}-exe-${{ matrix.arch }}
-          path: publish/exe-${{ matrix.arch }}/*.exe
+          path: publish/exe-${{ matrix.arch }}/${{ env.APP_NAME }}.exe
 
   build-maccatalyst:
     runs-on: macos-15
